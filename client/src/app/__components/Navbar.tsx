@@ -19,21 +19,28 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              <a
-                href="#"
-                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              <span
+                onClick={() => router.push("/about")}
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
                 About
-              </a>
-              <a
-                href="#"
-                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              </span>
+              <span
+                onClick={() => router.push("/features")}
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
                 Features
-              </a>
+              </span>
               <a
                 href="#"
                 className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Docs
               </a>
+              <button
+                onClick={() => router.push("/upload")}
+                className="ml-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg 
+                         hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105
+                         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 cursor-pointer">
+                Upload
+              </button>
             </div>
           </div>
         </div>

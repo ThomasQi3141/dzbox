@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/app/__components/Navbar";
+import Footer from "@/app/__components/Footer";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
@@ -10,6 +11,8 @@ const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const validateFile = (file: File) => {
     if (file.size > MAX_FILE_SIZE) {
@@ -54,13 +57,35 @@ const UploadPage = () => {
     }
   };
 
+  const handleUpload = () => {
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsUploading(false);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+
+    // In a real implementation, you would handle the actual file upload here
+    // and update the progress based on the actual upload status
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex flex-col">
       {/* Navigation */}
       <Navbar />
 
       {/* Main Content */}
-      <main className="relative">
+      <main className="relative flex-grow">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
@@ -68,7 +93,7 @@ const UploadPage = () => {
         </div>
 
         {/* Upload Section */}
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -137,17 +162,48 @@ const UploadPage = () => {
 
               {/* Upload Button */}
               <button
+                onClick={handleUpload}
                 className="mt-6 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg 
                          hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105
                          focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 cursor-pointer
                          disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!file || !!error}>
-                Upload File
+                disabled={!file || !!error || isUploading}>
+                {isUploading ? "Uploading..." : "Upload File"}
               </button>
+
+              {/* Upload Progress */}
+              {isUploading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-400">
+                      Upload Progress
+                    </span>
+                    <span className="text-sm font-medium text-purple-400">
+                      {uploadProgress}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2.5">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}></div>
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    {uploadProgress < 100
+                      ? "Uploading your file..."
+                      : "Upload complete!"}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
