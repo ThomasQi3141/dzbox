@@ -29,11 +29,6 @@ const Navbar = () => {
                 className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
                 Features
               </span>
-              <a
-                href="#"
-                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Docs
-              </a>
               <button
                 onClick={() => router.push("/upload")}
                 className="ml-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg 
