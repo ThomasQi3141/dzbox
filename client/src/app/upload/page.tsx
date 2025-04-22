@@ -30,6 +30,7 @@ const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [ttlError, setTtlError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [config, setConfig] = useState({
@@ -101,6 +102,26 @@ const UploadPage = () => {
     return config.ttl as number;
   };
 
+  const validateTtl = () => {
+    const ttlValue = getTtlValue();
+    if (ttlValue < 60) {
+      setTtlError("Time to Live must be at least 1 minute (60 seconds)");
+      return false;
+    }
+    if (ttlValue > 86400) {
+      setTtlError("Time to Live cannot exceed 1 day (86400 seconds)");
+      return false;
+    }
+    setTtlError(null);
+    return true;
+  };
+
+  const handleStep2Next = () => {
+    if (validateTtl()) {
+      setStep(3);
+    }
+  };
+
   const handleUpload = () => {
     if (!file) return;
 
@@ -125,9 +146,11 @@ const UploadPage = () => {
 
   const renderStep1 = () => (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      key="step1"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 20 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="text-center">
       <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-6">
         Upload Your Files
@@ -196,9 +219,11 @@ const UploadPage = () => {
 
   const renderStep2 = () => (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      key="step2"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="text-center">
       <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-6 leading-tight">
         Configure Your Upload
@@ -215,7 +240,10 @@ const UploadPage = () => {
           </label>
           <select
             value={config.ttl}
-            onChange={(e) => handleConfigChange("ttl", e.target.value)}
+            onChange={(e) => {
+              handleConfigChange("ttl", e.target.value);
+              setTtlError(null);
+            }}
             className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-lg
                      text-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
                      transition-all duration-300 appearance-none [&>option]:bg-gray-800 [&>option]:text-gray-300">
@@ -234,15 +262,22 @@ const UploadPage = () => {
               <input
                 type="text"
                 value={config.customTtl}
-                onChange={handleCustomTtlChange}
+                onChange={(e) => {
+                  handleCustomTtlChange(e);
+                  setTtlError(null);
+                }}
                 placeholder="Enter time in seconds"
-                className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-lg
+                className={`w-full px-4 py-3 bg-gray-800/50 backdrop-blur-lg border rounded-lg
                          text-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
-                         transition-all duration-300 [&::placeholder]:text-gray-500"
+                         transition-all duration-300 [&::placeholder]:text-gray-500
+                         ${ttlError ? "border-red-500" : "border-gray-700"}`}
               />
               <p className="mt-2 text-sm text-gray-500">
-                Enter the number of seconds (minimum 60)
+                Enter the number of seconds (minimum 60, maximum 86400)
               </p>
+              {ttlError && (
+                <p className="mt-2 text-sm text-red-500">{ttlError}</p>
+              )}
             </motion.div>
           )}
         </div>
@@ -292,6 +327,86 @@ const UploadPage = () => {
           Back
         </button>
         <button
+          onClick={handleStep2Next}
+          disabled={!!ttlError}
+          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg 
+                   hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105
+                   focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900
+                   disabled:opacity-50 disabled:cursor-not-allowed">
+          Next
+        </button>
+      </div>
+    </motion.div>
+  );
+
+  const renderStep3 = () => (
+    <motion.div
+      key="step3"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="text-center">
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-6 leading-tight">
+        Confirm Upload Details
+      </h1>
+      <p className="mt-6 text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Review your file and settings before uploading
+      </p>
+
+      <div className="mt-10 space-y-8 max-w-md mx-auto pb-8">
+        <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-xl border border-gray-700">
+          <h3 className="text-xl font-semibold text-purple-400 mb-4">
+            File Details
+          </h3>
+          <div className="space-y-4 text-left">
+            <div>
+              <p className="text-sm text-gray-400">File Name</p>
+              <p className="text-white">{file?.name}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">File Size</p>
+              <p className="text-white">
+                {(file?.size ? file.size / 1024 / 1024 : 0).toFixed(2)} MB
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Time to Live</p>
+              <p className="text-white">
+                {config.ttl === "custom"
+                  ? `${config.customTtl} seconds`
+                  : TTL_OPTIONS.find((opt) => opt.value === config.ttl)?.label}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Encryption</p>
+              <p className="text-white">
+                {
+                  ENCRYPTION_OPTIONS.find(
+                    (opt) => opt.value === config.encryption
+                  )?.label
+                }
+              </p>
+            </div>
+            {config.password && (
+              <div>
+                <p className="text-sm text-gray-400">Password Protected</p>
+                <p className="text-white">Yes</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-10 flex justify-center space-x-4">
+        <button
+          onClick={() => setStep(2)}
+          className="px-8 py-4 bg-gray-800/50 text-white font-semibold rounded-lg 
+                   hover:bg-gray-700 transition-all duration-300 transform hover:scale-105
+                   focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900">
+          Back
+        </button>
+        <button
           onClick={handleUpload}
           className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg 
                    hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105
@@ -318,7 +433,9 @@ const UploadPage = () => {
         {/* Upload Section */}
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-32">
           <AnimatePresence mode="wait">
-            {step === 1 ? renderStep1() : renderStep2()}
+            {step === 1 && renderStep1()}
+            {step === 2 && renderStep2()}
+            {step === 3 && renderStep3()}
           </AnimatePresence>
 
           {isUploading && (
