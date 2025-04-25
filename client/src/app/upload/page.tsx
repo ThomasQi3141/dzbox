@@ -32,7 +32,6 @@ const UploadPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [ttlError, setTtlError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [config, setConfig] = useState({
     ttl: TTL_OPTIONS[0].value,
     customTtl: "",
@@ -126,22 +125,12 @@ const UploadPage = () => {
     if (!file) return;
 
     setIsUploading(true);
-    setUploadProgress(0);
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 500);
-
-    // In a real implementation, you would handle the actual file upload here
-    // and update the progress based on the actual upload status
+    // Simulate upload for 3 seconds
+    setTimeout(() => {
+      setIsUploading(false);
+      // In a real implementation, you would handle the actual file upload here
+    }, 3000);
   };
 
   const renderStep1 = () => (
@@ -417,6 +406,32 @@ const UploadPage = () => {
     </motion.div>
   );
 
+  const renderLoading = () => (
+    <motion.div
+      key="loading"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="text-center">
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-6">
+        Uploading Your File
+      </h1>
+      <p className="mt-6 text-xl text-gray-400 max-w-2xl mx-auto">
+        Please wait while we process your file...
+      </p>
+
+      <div className="mt-16 flex justify-center">
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 border-4 border-purple-500/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-purple-500 rounded-full animate-spin"></div>
+          <div
+            className="absolute inset-0 border-4 border-transparent border-t-pink-500 rounded-full animate-spin"
+            style={{ animationDelay: "-0.5s" }}></div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex flex-col">
       {/* Navigation */}
@@ -433,36 +448,16 @@ const UploadPage = () => {
         {/* Upload Section */}
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-32">
           <AnimatePresence mode="wait">
-            {step === 1 && renderStep1()}
-            {step === 2 && renderStep2()}
-            {step === 3 && renderStep3()}
+            {isUploading ? (
+              renderLoading()
+            ) : (
+              <>
+                {step === 1 && renderStep1()}
+                {step === 2 && renderStep2()}
+                {step === 3 && renderStep3()}
+              </>
+            )}
           </AnimatePresence>
-
-          {isUploading && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-8">
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-gray-400">
-                  Upload Progress
-                </span>
-                <span className="text-sm font-medium text-purple-400">
-                  {uploadProgress}%
-                </span>
-              </div>
-              <div className="w-full bg-gray-700 rounded-full h-2.5">
-                <div
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}></div>
-              </div>
-              <div className="mt-2 text-sm text-gray-400">
-                {uploadProgress < 100
-                  ? "Uploading your file..."
-                  : "Upload complete!"}
-              </div>
-            </motion.div>
-          )}
         </div>
       </main>
 

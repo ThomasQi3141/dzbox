@@ -29,7 +29,7 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-6">
-              Upload, Download & Monetize Files,{" "}
+              Upload, Download & Share Files,{" "}
               <span className="block mt-2">Decentralized</span>
             </h1>
             <p className="mt-6 text-xl text-gray-400 max-w-3xl mx-auto">
@@ -121,7 +121,7 @@ export default function HomePage() {
                     Smart Contracts
                   </h3>
                   <p className="text-gray-400">
-                    Automate file sharing and monetization with transparent,
+                    Automate file sharing and access control with transparent,
                     trustless agreements.
                   </p>
                 </div>

@@ -80,8 +80,8 @@ const AboutPage = () => {
                   Smart Contracts
                 </h3>
                 <p className="text-gray-400">
-                  Automated, transparent agreements for file sharing and
-                  monetization.
+                  Automated, transparent agreements for secure file sharing and
+                  access control.
                 </p>
               </div>
               <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-xl border border-gray-700">
