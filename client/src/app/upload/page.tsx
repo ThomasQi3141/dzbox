@@ -8,13 +8,12 @@ import Footer from "@/app/__components/Footer";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
 const TTL_OPTIONS = [
-  { label: "1 minute", value: 60 },
-  { label: "5 minutes", value: 300 },
-  { label: "15 minutes", value: 900 },
   { label: "1 hour", value: 3600 },
   { label: "6 hours", value: 21600 },
   { label: "12 hours", value: 43200 },
   { label: "1 day", value: 86400 },
+  { label: "2 days", value: 172800 },
+  { label: "3 days", value: 259200 },
   { label: "Custom", value: "custom" },
 ];
 
@@ -103,12 +102,12 @@ const UploadPage = () => {
 
   const validateTtl = () => {
     const ttlValue = getTtlValue();
-    if (ttlValue < 60) {
-      setTtlError("Time to Live must be at least 1 minute (60 seconds)");
+    if (ttlValue < 3600) {
+      setTtlError("Time to Live must be at least 1 hour (3600 seconds)");
       return false;
     }
-    if (ttlValue > 86400) {
-      setTtlError("Time to Live cannot exceed 1 day (86400 seconds)");
+    if (ttlValue > 259200) {
+      setTtlError("Time to Live cannot exceed 3 days (259200 seconds)");
       return false;
     }
     setTtlError(null);
@@ -131,6 +130,17 @@ const UploadPage = () => {
       setIsUploading(false);
       // In a real implementation, you would handle the actual file upload here
     }, 3000);
+  };
+
+  // Add this helper function to format TTL display
+  const formatTTL = (ttl: number | string) => {
+    if (typeof ttl === "string" && ttl === "custom") {
+      return `${config.customTtl} seconds`;
+    }
+
+    const ttlValue = typeof ttl === "string" ? parseInt(ttl) : ttl;
+    const option = TTL_OPTIONS.find((opt) => opt.value === ttlValue);
+    return option ? option.label : `${ttlValue} seconds`;
   };
 
   const renderStep1 = () => (
@@ -262,7 +272,7 @@ const UploadPage = () => {
                          ${ttlError ? "border-red-500" : "border-gray-700"}`}
               />
               <p className="mt-2 text-sm text-gray-500">
-                Enter the number of seconds (minimum 60, maximum 86400)
+                Enter the number of seconds (minimum 3600, maximum 259200)
               </p>
               {ttlError && (
                 <p className="mt-2 text-sm text-red-500">{ttlError}</p>
@@ -361,11 +371,7 @@ const UploadPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400">Time to Live</p>
-              <p className="text-white">
-                {config.ttl === "custom"
-                  ? `${config.customTtl} seconds`
-                  : TTL_OPTIONS.find((opt) => opt.value === config.ttl)?.label}
-              </p>
+              <p className="text-white">{formatTTL(config.ttl)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Encryption</p>
