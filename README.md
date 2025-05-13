@@ -2,8 +2,6 @@
 
 DzBox is a modern, decentralized file sharing platform that leverages blockchain technology and IPFS for secure, private, and efficient file transfers. Built with Next.js, Go, and Web3 technologies.
 
-![DzBox Preview](preview.png)
-
 ## 🌟 Features
 
 - **Decentralized Storage**: Files are distributed across IPFS network
@@ -40,74 +38,6 @@ DzBox is a modern, decentralized file sharing platform that leverages blockchain
 - PostgreSQL
 - MetaMask or other Web3 wallet
 - Web3.Storage account
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/dzbox.git
-cd dzbox
-```
-
-2. Install frontend dependencies:
-
-```bash
-cd client
-npm install
-```
-
-3. Install backend dependencies:
-
-```bash
-cd ../server
-go mod tidy
-```
-
-4. Set up environment variables:
-
-Create `.env.local` in the client directory:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8080
-NEXT_PUBLIC_WEB3_STORAGE_TOKEN=your_web3_storage_token
-```
-
-Create `.env` in the server directory:
-
-```env
-DATABASE_URL=postgres://username:password@localhost:5432/dzbox
-ETH_NODE_URL=your_ethereum_node_url
-WEB3_STORAGE_TOKEN=your_web3_storage_token
-CONTRACT_ADDRESS=your_contract_address
-PRIVATE_KEY=your_private_key
-```
-
-5. Start the development servers:
-
-Frontend:
-
-```bash
-cd client
-npm run dev
-```
-
-Backend:
-
-```bash
-cd server
-go run cmd/server/main.go
-```
-
-## 📝 Usage
-
-1. Visit `http://localhost:3000`
-2. Click "Upload" to start sharing files
-3. Select your file and configure:
-   - Time to Live (1 hour to 3 days)
-   - Encryption method
-   - Optional password protection
-4. Upload and share the generated short code
 
 ## 🔒 Security
 
