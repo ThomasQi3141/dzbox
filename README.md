@@ -60,18 +60,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Web3.Storage](https://web3.storage/) for IPFS integration
-- [Ethereum](https://ethereum.org/) for blockchain infrastructure
-- [Next.js](https://nextjs.org/) for the frontend framework
-- [Gin](https://gin-gonic.com/) for the backend framework
-
-## 📞 Support
-
-For support, email support@dzbox.xyz or join our Discord community.
-
----
-
-Built with ❤️ by the DzBox team
